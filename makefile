@@ -2,6 +2,10 @@
 help:
 	grep -v '^\.PHONY: ' makefile
 
+.PHONY: clean
+clean:
+	rm -rf temp
+
 temp:
 	mkdir temp
 

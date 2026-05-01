@@ -1,22 +1,46 @@
-import os
-import time
+import sys
+
+sys.path.append('tools')
+
+import collections
+import numpy as np
+
+import curve
+import benchmark_app
 
 
-def elapsed(n1, n2):
-    start = time.perf_counter()
-    os.system(f'echo {n1} {n2} | python sv-baseline/primes.py > temp/sv-baseline.txt')
-    finish = time.perf_counter()
-    return finish - start
+def avg_time(n):
+    return curve.curve(n, 2.016e-8)
 
 
-def main():
-    n, m, k = map(int, input().split())
+def bsearch(low, high, pred):
+    if low >= high or pred(low):
+        return low
+    while low < high - 1:
+        mid = (low + high) // 2
+        if pred(mid):
+            high = mid
+        else:
+            low = mid
+    return high
 
-    for _ in range(k):
-        for i in range(n):
-            n1 = m * i
-            n2 = n1 + m
-            print(n1, elapsed(n1, n2), flush=True)
+
+def find_dt(n):
+    v1 = avg_time(n)
+    return bsearch(
+        1,
+        60,
+        lambda dt: (avg_time(n + round(dt / v1)) - v1) / v1 > 0.01
+    )
 
 
-main()
+def make_scheme():
+    scheme = collections.Counter()
+    for n1 in map(round, np.geomspace(10, 1e17, 250)):
+        dt = find_dt(n1)
+        if dt >= 2:
+            scheme.update({(n1, n1 + round(dt / avg_time(n1))): 1})
+    return scheme
+
+
+benchmark_app.main(make_scheme())

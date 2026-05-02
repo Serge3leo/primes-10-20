@@ -2,6 +2,14 @@
 help:
 	grep -v '^\.PHONY: ' makefile
 
+.PHONY: connect
+connect:
+	ssh -X desktop -t tmux new-session -A -s p12 -c desk/stackoverflow/primes-10-20
+
+.PHONY: suspend
+suspend:
+	ssh -t desktop systemctl suspend
+
 .PHONY: clean
 clean:
 	rm -rf temp

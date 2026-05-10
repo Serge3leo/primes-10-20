@@ -31,7 +31,7 @@ def extrapolate(curve, x, y):
     c, pcov = scipy.optimize.curve_fit(curve, x, y)
     xx = np.geomspace(1e6, 1e20, num=1000)
     yy = curve(xx, *c)
-    return c, pcov, xx, yy, np.trapezoid(xx, yy)
+    return c, pcov, xx, yy, np.trapezoid(yy, xx)
 
 
 def main(curve):
@@ -46,7 +46,7 @@ def main(curve):
     plt.loglog(x, np.array(y) * 1e9, 'o')
     
     if curve is None:
-        s = np.trapezoid(*zip(*xy))
+        s = np.trapezoid(y, x)
     else:
         c, pcov, xx, yy, s = extrapolate(curve, *zip(*xy))
         print('curve optimal parameters          ', c)

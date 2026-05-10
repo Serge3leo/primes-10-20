@@ -4,7 +4,7 @@ import gmpy2
 
 def main():
     for n in range(*map(int, input().split())):
-         if gmpy2.is_prime(n): # ключевая команда в этом коде, всё остальное - обслуга
+         if gmpy2.is_prime(n, 34): # ключевая команда в этом коде, всё остальное - обслуга
              print(n)
 
 

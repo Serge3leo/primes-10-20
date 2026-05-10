@@ -43,3 +43,19 @@ benchmark-foxfox: | benchmarks temp
 .PHONY: show-foxfox
 show-foxfox:
 	python foxfox/plot.py -f benchmarks/foxfox.txt
+
+temp/pakuula: pakuula/primes.cc | temp
+	g++ -O2 -o temp/pakuula pakuula/primes.cc -lcrypto
+
+.PHONY: remove-pakuula
+remove-pakuula:
+	rm -f temp/pakuula
+	rm -f benchmarks/pakuula.txt
+
+.PHONY: benchmark-pakuula
+benchmark-pakuula: temp/pakuula | benchmarks temp
+	python pakuula/benchmark.py -f benchmarks/pakuula.txt
+
+.PHONY: show-pakuula
+show-pakuula:
+	python pakuula/plot.py -f benchmarks/pakuula.txt

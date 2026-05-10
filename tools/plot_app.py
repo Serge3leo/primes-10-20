@@ -42,14 +42,18 @@ def main(curve):
     args = parser.parse_args()
 
     xy = read_benchmark(args.f, args.a)
+    plt.loglog(*zip(*xy), 'o')
     
-    c, pcov, xx, yy, s = extrapolate(curve, *zip(*xy))
-    print('curve optimal parameters          ', c)
-    print('curve optimal parameter covariance', pcov)
+    if curve is None:
+        s = np.trapezoid(*zip(*xy))
+    else:
+        c, pcov, xx, yy, s = extrapolate(curve, *zip(*xy))
+        print('curve optimal parameters          ', c)
+        print('curve optimal parameter covariance', pcov)
+        plt.loglog(xx, yy)
+
     print('work time estmation               ', f'{s:.3g}', 'seconds')
     print('                                  ', f'{s / 60 / 60 / 24 / 365:.3g}', 'years')
 
-    plt.loglog(*zip(*xy), 'o')
-    plt.loglog(xx, yy)
     plt.xticks([10. ** i for i in range(6, 21)])
     plt.show()

@@ -43,4 +43,8 @@ def make_scheme():
     return scheme
 
 
-benchmark_app.main(make_scheme())
+benchmark_app.main(
+    make_scheme(),
+    lambda n1, n2:
+        f'echo {n1} {n2} | python sv-baseline/primes.py > temp/sv-baseline.txt'
+)

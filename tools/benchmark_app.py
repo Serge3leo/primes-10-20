@@ -3,11 +3,9 @@ import os
 import time
 
 
-def elapsed(n1, n2):
+def elapsed(n1, n2, command):
     start = time.perf_counter()
-    os.system(
-        f'echo {n1} {n2} | python sv-baseline/primes.py > temp/sv-baseline.txt'
-    )
+    os.system(command(n1, n2))
     finish = time.perf_counter()
     return finish - start
 
@@ -30,7 +28,7 @@ def update_table(fname, n1, n2, t):
         print(n1, n2, t, file=f)
 
 
-def main(scheme):
+def main(scheme, command):
     parser = argparse.ArgumentParser(description='sv-baseline benchmark')
     parser.add_argument(
         '-n',
@@ -48,4 +46,4 @@ def main(scheme):
         for _ in range(k - k_now): 
             print(*key, '...')
             if not args.n:
-                update_table(args.f, *key, elapsed(*key))
+                update_table(args.f, *key, elapsed(*key, command))

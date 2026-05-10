@@ -31,3 +31,15 @@ benchmark-sv-baseline: | benchmarks temp
 .PHONY: show-sv-baseline
 show-sv-baseline:
 	python sv-baseline/plot.py -f benchmarks/sv-baseline.txt
+
+.PHONY: remove-foxfox
+remove-foxfox:
+	rm -f benchmarks/foxfox.txt
+
+.PHONY: benchmark-foxfox
+benchmark-foxfox: | benchmarks temp
+	python foxfox/benchmark.py -f benchmarks/foxfox.txt
+
+.PHONY: show-foxfox
+show-foxfox:
+	python foxfox/plot.py -f benchmarks/foxfox.txt

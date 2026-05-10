@@ -44,6 +44,12 @@ benchmark-foxfox: | benchmarks temp
 show-foxfox:
 	python foxfox/plot.py -f benchmarks/foxfox.txt
 
+.PHONY: check-foxfox
+check-foxfox:
+	cat benchmarks/foxfox.txt | python tools/check.py \
+		-c1 "echo {} {} | python sv-sieve2/primes.py" \
+		-c2 "echo {} {} | python foxfox/primes.py"
+
 temp/pakuula: pakuula/primes.cc | temp
 	g++ -O2 -o temp/pakuula pakuula/primes.cc -lcrypto
 
@@ -59,3 +65,20 @@ benchmark-pakuula: temp/pakuula | benchmarks temp
 .PHONY: show-pakuula
 show-pakuula:
 	python pakuula/plot.py -f benchmarks/pakuula.txt
+
+temp/pakuula-2: pakuula-2/primes128.cc | temp
+	g++ -O2 -o temp/pakuula-2 -march=native -mbmi2 pakuula-2/primes128.cc
+
+.PHONY: remove-pakuula-2
+remove-pakuula-2:
+	rm -f temp/pakuula-2
+	rm -f benchmarks/pakuula-2.txt
+
+.PHONY: benchmark-pakuula-2
+benchmark-pakuula-2: temp/pakuula-2 | benchmarks temp
+	python pakuula-2/benchmark.py -f benchmarks/pakuula-2.txt
+
+.PHONY: show-pakuula-2
+show-pakuula-2:
+	python pakuula-2/plot.py -f benchmarks/pakuula-2.txt
+

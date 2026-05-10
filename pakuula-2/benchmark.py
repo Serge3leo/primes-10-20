@@ -44,5 +44,5 @@ def make_scheme():
 
 benchmark_app.main(
     make_scheme(),
-    lambda n1, n2: f'temp/pakuula-2 {n1} {n2} > temp/pakuula-2.txt'
+    lambda n1, n2: f'temp/pakuula-2 -i 34 -p {n1} {n2} > temp/pakuula-2.txt'
 )

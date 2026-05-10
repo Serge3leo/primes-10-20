@@ -5,8 +5,10 @@ import time
 
 def elapsed(n1, n2, command):
     start = time.perf_counter()
-    os.system(command(n1, n2))
+    ec = os.system(command(n1, n2)) 
     finish = time.perf_counter()
+    if ec != 0:
+        exit(1)
     return finish - start
 
 

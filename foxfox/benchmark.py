@@ -63,5 +63,5 @@ def make_scheme():
 
 benchmark_app.main(
     make_scheme(),
-    lambda n1, n2: f'echo {n1} {n2} | python foxfox/primes.py > temp/foxfo.txt'
+    lambda n1, n2: f'echo {n1} {n2} | python foxfox/primes.py > temp/foxfox.txt'
 )

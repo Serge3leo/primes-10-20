@@ -20,7 +20,7 @@ def main():
         s1 = n2 ** 0.5 / 10
         s2 = n2 ** 0.5 * 1000
         for s in map(round, np.geomspace(s1, s2, 20)):
-            print(n2, s, elapsed(s, n2) / s * 1e9)
+            print(n2, s, elapsed(s, n2) / s * 1e9, flush=True)
 
 
 main()

@@ -20,7 +20,7 @@ def _to_seq(x: Iterable[int]) -> Sequence[int]:
     return list(x)
 
 
-def sieve(a: int, b: int, sieve_size: int) -> Generator[Iterable[int], None, None]:
+def sieve(primes_less_10_10, a: int, b: int, sieve_size: int) -> Generator[Iterable[int], None, None]:
     # генерирует последовательности целых чисел (int | np.int64)
     # их обьединение есть все простые из [a, b) в порядке возрастания
 
@@ -36,7 +36,7 @@ def sieve(a: int, b: int, sieve_size: int) -> Generator[Iterable[int], None, Non
         yield primes_less_10_10[id1:id2]
         return
 
-    groups = [_to_seq(group) for group in sieve(0, math.isqrt(b)+1, sieve_size)]
+    groups = [_to_seq(group) for group in sieve(primes_less_10_10, 0, math.isqrt(b)+1, sieve_size)]
     if a <= groups[-1][-1]:
         yield (
             p
@@ -48,7 +48,7 @@ def sieve(a: int, b: int, sieve_size: int) -> Generator[Iterable[int], None, Non
     mask = np.empty(sieve_size, dtype="uint8")
     for i in range(max(math.isqrt(b), a), b, sieve_size):
         size = min(sieve_size, b - i)
-        print(i, i + size, file=sys.stderr)
+        # print(i, i + size, file=sys.stderr)
         mask = mask[:size]
         mask[:] = 1
         for group in groups:
@@ -61,33 +61,38 @@ def sieve(a: int, b: int, sieve_size: int) -> Generator[Iterable[int], None, Non
             yield mask.nonzero()[0] + i
 
 
-sieve_size = 10*8*1024**2
+# sieve_size = 8*1024**2
 # 8MB. Оптимально на моём ноутбуке (L2: 6*512KB, L3: 16MB)
 # Возможно равен L2, честно не уверен
 
-save_all_primes_less_10_10 = True
-primes_less_10_10 = None
+# primes_less_10_10 = None
 # Разрешить предвычислить все простые до 10^10
 # Занимает менее 4ГБ
 
 
-if save_all_primes_less_10_10:
-    if not os.path.exists("primes.bin"):
-        with open("primes.bin", "wb") as out:
-            for group in sieve(0, 10**10, sieve_size):
+def main():
+    primes_file, sieve_size, n1, n2 = sys.argv[1:]
+    sieve_size = int(sieve_size)
+    n1 = int(n1)
+    n2 = int(n2)
+
+    if not os.path.exists(primes_file):
+        with open(primes_file, "wb") as out:
+            for group in sieve(None, 0, 10**10, sieve_size):
                 if isinstance(group, np.ndarray):
                     out.write(group.astype(np.int64).tobytes())
                 else:
                     for p in group:
                         out.write(int(p).to_bytes(length=8, byteorder="little", signed=True))
-    primes_less_10_10 = np.memmap("primes.bin", dtype=np.int64).copy()
+    primes_less_10_10 = np.memmap(primes_file, dtype=np.int64).copy()
     if primes_less_10_10.shape[0] != 455052511:
-        os.remove("primes.bin")
-        raise ValueError("invalid primes.bin")
+        os.remove(primes_file)
+        raise ValueError(f"invalid {primes_file}")
+
+    for group in sieve(primes_less_10_10, n1, n2, sieve_size):
+        for n in group:
+            print(n)
 
 
 if __name__ == "__main__":
-    a, b = int(sys.argv[1]), int(sys.argv[2])
-
-    for group in sieve(a, b, sieve_size):
-        print(*group, sep="\n")
+    main()

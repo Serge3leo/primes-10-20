@@ -10,7 +10,7 @@ import benchmark_app
 s = 10 ** 10
 scheme = {
     (n2 - s, n2): 1
-    for n2 in map(round, np.geomspace(1e11, 1e20, 200))
+    for n2 in map(round, np.geomspace(1e11, 1e20, 45 + 1))
 }
 
 benchmark_app.main(

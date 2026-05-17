@@ -93,3 +93,7 @@ benchmark-danis: | benchmarks temp
 	python danis/primes.py temp/primes_less_10_10.bin 10_000_000_000 1 100 > /dev/null
 	python danis/benchmark.py -f benchmarks/danis.txt
 
+.PHONY: show-danis
+show-danis:
+	python danis/plot.py -f benchmarks/danis.txt
+

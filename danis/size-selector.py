@@ -18,8 +18,9 @@ def main():
     for k in range(14, 21):
         n2 = 10 ** k
         s1 = n2 ** 0.5 / 10
-        s2 = n2 ** 0.5 * 1000
+        s2 = min(1e10, n2 ** 0.5 * 1000)
         for s in map(round, np.geomspace(s1, s2, 20)):
+            # print(n2, s, flush=True)
             print(n2, s, elapsed(s, n2) / s * 1e9, flush=True)
 
 

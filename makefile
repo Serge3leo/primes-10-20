@@ -82,3 +82,14 @@ benchmark-pakuula-2: temp/pakuula-2 | benchmarks temp
 show-pakuula-2:
 	python pakuula-2/plot.py -f benchmarks/pakuula-2.txt
 
+.PHONY: remove-danis
+remove-danis:
+	rm -f benchmarks/danis.txt
+	rm -f temp/primes_less_10_10.bin
+
+.PHONY: benchmark-danis
+benchmark-danis: | benchmarks temp
+	# create temp/primes_less_10_10.bin if needed
+	python danis/primes.py temp/primes_less_10_10.bin 10_000_000_000 1 100 > /dev/null
+	python danis/benchmark.py -f benchmarks/danis.txt
+

@@ -2,21 +2,18 @@ import sys
 
 sys.path.append('tools')
 
-import collections
 import numpy as np
 
 import benchmark_app
 
 
-def make_scheme():
-    scheme = collections.Counter()
-    s = round(3 / (6.3 / 10000000))
-    for n1 in map(round, np.geomspace(1e6, 1e20, 1000)):
-        scheme.update({(n1, n1 + s): 1})
-    return scheme
-
+s = 10 ** 10
+scheme = {
+    (n2 - s, n2): 1
+    for n2 in map(round, np.geomspace(1e11, 1e20, 200))
+}
 
 benchmark_app.main(
-    make_scheme(),
-    lambda n1, n2: f'temp/pakuula-2 -i 34 -p {n1} {n2} > temp/pakuula-2.txt'
+    scheme,
+    lambda n1, n2: f'python danis/primes.py temp/primes_less_10_10.bin {s} {n1} {n2} > temp/danis.txt'
 )

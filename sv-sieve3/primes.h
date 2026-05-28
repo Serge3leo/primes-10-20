@@ -62,7 +62,7 @@ void sqr(Int86 *b, uint64_t a) {
 }
 
 // TODO: it is slow
-uint64_t isqrt(const Int86 *a) {
+uint64_t i86_isqrt(const Int86 *a) {
     uint64_t low = 0;
     uint64_t high = 1UL << 43;
 
@@ -71,6 +71,22 @@ uint64_t isqrt(const Int86 *a) {
         Int86 b;
         sqr(&b, mid);
         if (lt(a, &b)) {
+            high = mid;
+        } else {
+            low = mid;
+        }
+    }
+    return low;
+}
+
+// TODO: it is slow
+uint32_t i64_isqrt(uint64_t a) {
+    uint32_t low = 0;
+    uint32_t high = (uint32_t)-1;
+
+    while (low + 1 < high) {
+        uint32_t mid = (low + high) >> 1;
+        if (a < ((uint64_t) mid) * mid) {
             high = mid;
         } else {
             low = mid;
@@ -89,7 +105,7 @@ typedef struct {
 } DecInt24;
 
 
-void toDecimal(const Int86 *a, DecInt24 *b) {
+void to_decimal(const Int86 *a, DecInt24 *b) {
     uint64_t low = (a->high % DEC_BASE) * (1UL << LOW_BITS) + a->low;
     uint64_t high = (a->high / DEC_BASE) * (1UL << LOW_BITS);
     b->low = low % DEC_BASE;
@@ -98,7 +114,7 @@ void toDecimal(const Int86 *a, DecInt24 *b) {
 
 void print(FILE *f, const Int86 *a) {
     DecInt24 b;
-    toDecimal(a, &b);
+    to_decimal(a, &b);
     if (b.high == 0) {
         fprintf(f, "%" PRIu64, b.low);
     } else {

@@ -97,3 +97,22 @@ benchmark-danis: | benchmarks temp
 show-danis:
 	python danis/plot.py -f benchmarks/danis.txt
 
+temp/sv-sieve3: sv-sieve3/primes.h sv-sieve3/primes.c
+	gcc \
+		-O2 \
+		-o temp/sv-sieve3 \
+		-std=c11 \
+		-Isv-sieve3 \
+		-pedantic \
+		-Wall \
+		-Wextra \
+		-Werror \
+		-Wwrite-strings \
+		-Wconversion \
+		sv-sieve3/primes.c
+
+.PHONY: check-sv-sieve3
+check-sv-sieve3: temp/sv-sieve3
+	cat benchmarks/foxfox.txt | python tools/check.py \
+		-c1 "echo {} {} | temp/sv-sieve3" \
+		-c2 "echo {} {} | python foxfox/primes.py"
